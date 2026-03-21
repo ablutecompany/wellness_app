@@ -13,6 +13,7 @@ import { GlobalDetailScreen } from './src/screens/GlobalDetailScreen';
 import { WelcomeScreen } from './src/screens/OnboardingWelcome';
 import { OnboardingGoals } from './src/screens/OnboardingGoals';
 import { OnboardingPermissions } from './src/screens/OnboardingPermissions';
+import { PairingScreen } from './src/screens/PairingScreen';
 import { 
   Home as HomeIcon, 
   Brain, 
@@ -27,13 +28,11 @@ const Stack = createNativeStackNavigator();
 function MainTabs() {
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: theme.colors.background,
-          borderTopColor: theme.colors.cardBorder,
-          height: 60,
-          paddingBottom: 10,
+          display: 'none'
         },
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: theme.colors.textMuted,
@@ -62,6 +61,7 @@ export default function App() {
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="OnboardingGoals" component={OnboardingGoals} />
         <Stack.Screen name="OnboardingPermissions" component={OnboardingPermissions} />
+        <Stack.Screen name="Pairing" component={PairingScreen} />
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="GlobalDetail" component={GlobalDetailScreen} options={{ presentation: 'modal' }} />
         <Stack.Screen 

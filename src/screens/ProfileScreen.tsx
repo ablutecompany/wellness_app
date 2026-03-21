@@ -2,17 +2,17 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Container, Typography } from '../components/Base';
 import { theme } from '../theme';
-import { User, CreditCard, Settings, LogOut, ChevronRight, Globe } from 'lucide-react-native';
+import { User, CreditCard, Settings, LogOut, ChevronRight, Globe, Activity } from 'lucide-react-native';
 
 export const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
     <Container safe style={styles.container}>
       <View style={styles.header}>
         <View style={styles.avatar}>
-          <User size={40} color={theme.colors.background} />
+          <Settings size={40} color={theme.colors.background} />
         </View>
-        <Typography variant="h2">Nuno Mendes</Typography>
-        <Typography variant="caption">Membro desde Março 2026</Typography>
+        <Typography variant="h2">Configurações</Typography>
+        <Typography variant="caption">Nuno Mendes • Membro desde 2026</Typography>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -30,7 +30,7 @@ export const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => 
         </View>
 
         <View style={styles.menuSection}>
-          <Typography variant="caption" style={styles.sectionLabel}>SISTEMA</Typography>
+          <Typography variant="caption" style={styles.sectionLabel}>SISTEMA & PREFERÊNCIAS</Typography>
           
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIcon}>
@@ -40,11 +40,27 @@ export const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => 
             <ChevronRight size={20} color={theme.colors.textMuted} />
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('OnboardingGoals')}>
+            <View style={styles.menuIcon}>
+              <User size={20} color={theme.colors.text} />
+            </View>
+            <Typography style={styles.menuTitle}>Definir Objetivos</Typography>
+            <ChevronRight size={20} color={theme.colors.textMuted} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={() => navigation.navigate('OnboardingPermissions')}>
+            <View style={styles.menuIcon}>
+              <Activity size={20} color={theme.colors.text} />
+            </View>
+            <Typography style={styles.menuTitle}>Inputs e Fontes de Dados</Typography>
+            <ChevronRight size={20} color={theme.colors.textMuted} />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuIcon}>
               <Settings size={20} color={theme.colors.text} />
             </View>
-            <Typography style={styles.menuTitle}>Configurações</Typography>
+            <Typography style={styles.menuTitle}>Configurações Avançadas</Typography>
             <ChevronRight size={20} color={theme.colors.textMuted} />
           </TouchableOpacity>
         </View>

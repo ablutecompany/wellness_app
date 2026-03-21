@@ -12,55 +12,64 @@ import {
   Smartphone 
 } from 'lucide-react-native';
 
-const PERMISSIONS = [
-  { id: 'health', icon: Heart, title: 'Saúde e Biomarcadores', desc: 'Sincronização com Apple Health / Google Fit.' },
-  { id: 'sensors', icon: Smartphone, title: 'Sensores do Dispositivo', desc: 'Acesso a acelerómetro e giroscópio.' },
-  { id: 'motion', icon: Activity, title: 'Movimento e Atividade', desc: 'Deteção automática de passos e exercícios.' },
-  { id: 'location', icon: MapPin, title: 'Localização', desc: 'Contexto ambiental e meteorológico.' },
-  { id: 'bluetooth', icon: Bluetooth, title: 'Bluetooth', desc: 'Ligação ao teu equipamento ablute_.' },
-  { id: 'microphone', icon: Mic, title: 'Microfone', desc: 'Para interações de voz com o chat.' },
+const ESSENTIAL_PERMISSIONS = [
+  { id: 'nfc', icon: Smartphone, title: 'Hardware ablute_', desc: 'Ativação imediata via NFC para análise funcional.' },
+  { id: 'consent', icon: Smartphone, title: 'Privacidade e Consentimento', desc: 'Acordo legal para processamento seguro dos teus dados.' },
+];
+
+const RECOMMENDED_PERMISSIONS = [
+  { id: 'health', icon: Heart, title: 'Biomarcadores de Saúde', desc: 'Sincronização passiva para contexto AI personalizado.' },
+  { id: 'sensors', icon: Activity, title: 'Atividade e Movimento', desc: 'Interpretação da tua recuperação e esforço diário.' },
+  { id: 'location', icon: Bluetooth, title: 'Equipamento Próximo', desc: 'Deteção automática de hardware via Bluetooth LE.' },
 ];
 
 export const OnboardingPermissions: React.FC<{ navigation: any }> = ({ navigation }) => {
   const handleFinalize = () => {
-    // In a real app, request permissions here
-    navigation.replace('Main');
+    navigation.goBack();
   };
+
+  const renderItem = (p: any) => (
+    <View key={p.id} style={styles.permissionItem}>
+      <View style={styles.iconContainer}>
+        <p.icon size={22} color={theme.colors.primary} />
+      </View>
+      <View style={styles.permText}>
+        <Typography variant="body" style={styles.permTitle}>{p.title}</Typography>
+        <Typography variant="caption" color={theme.colors.textMuted}>{p.desc}</Typography>
+      </View>
+    </View>
+  );
 
   return (
     <Container safe style={styles.container}>
-      <View style={styles.header}>
-        <Typography variant="caption" color={theme.colors.primary}>PASSO 2 DE 2</Typography>
-        <Typography variant="h2" style={styles.title}>
-          Para uma leitura real do teu estado, precisamos de aceder aos sinais do teu corpo.
-        </Typography>
-        <Typography color={theme.colors.textSecondary}>
-          Garantimos a máxima privacidade. O teu consentimento permite a interpretação funcional.
-        </Typography>
-      </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Typography variant="h2" style={styles.title}>
+            Inputs e Fontes de Dados
+          </Typography>
+          <Typography color={theme.colors.textSecondary} style={styles.subtitle}>
+            A tua base biológica. Quanto mais sinais autorizares, mais precisa e útil será a leitura interpretativa do teu corpo.
+          </Typography>
+        </View>
 
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {PERMISSIONS.map((p) => (
-          <View key={p.id} style={styles.permissionItem}>
-            <View style={styles.iconContainer}>
-              <p.icon size={24} color={theme.colors.primary} />
-            </View>
-            <View style={styles.permText}>
-              <Typography variant="body" style={styles.permTitle}>{p.title}</Typography>
-              <Typography variant="caption">{p.desc}</Typography>
-            </View>
-          </View>
-        ))}
+        <Typography variant="caption" color={theme.colors.textMuted} style={styles.sectionLabel}>
+          ESSENCIAIS
+        </Typography>
+        {ESSENTIAL_PERMISSIONS.map(renderItem)}
+
+        <View style={{ height: theme.spacing.xl }} />
+
+        <Typography variant="caption" color={theme.colors.textMuted} style={styles.sectionLabel}>
+          RECOMENDADOS (CONTEXTO AI)
+        </Typography>
+        {RECOMMENDED_PERMISSIONS.map(renderItem)}
       </ScrollView>
 
       <View style={styles.footer}>
         <Button 
-          title="Ativar tudo e Continuar" 
+          title="Salvar e Voltar" 
           onPress={handleFinalize}
         />
-        <TouchableOpacity style={styles.skip} onPress={handleFinalize}>
-          <Typography variant="caption" style={{ textAlign: 'center' }}>Configurar manualmente depois</Typography>
-        </TouchableOpacity>
       </View>
     </Container>
   );
@@ -72,28 +81,35 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.xl,
   },
   header: {
-    marginBottom: theme.spacing.xl,
+    marginTop: theme.spacing.xl,
+    marginBottom: theme.spacing.xxl,
   },
   title: {
-    marginTop: theme.spacing.sm,
-    marginBottom: theme.spacing.md,
+    marginBottom: theme.spacing.sm,
   },
-  scroll: {
-    paddingBottom: theme.spacing.xl,
+  subtitle: {
+    lineHeight: 24,
+  },
+  sectionLabel: {
+    marginBottom: theme.spacing.md,
+    letterSpacing: 1.2,
+    fontWeight: '700',
   },
   permissionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.lg,
+    marginBottom: theme.spacing.xl,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     borderRadius: 12,
     backgroundColor: theme.colors.card,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: theme.spacing.md,
+    borderWidth: 1,
+    borderColor: theme.colors.cardBorder,
   },
   permText: {
     flex: 1,
@@ -101,12 +117,19 @@ const styles = StyleSheet.create({
   permTitle: {
     fontWeight: '600',
     marginBottom: 2,
+    color: theme.colors.text,
   },
   footer: {
-    marginTop: theme.spacing.md,
+    paddingTop: theme.spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: theme.colors.cardBorder,
   },
   skip: {
     marginTop: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
+  },
+  skipText: {
+    textAlign: 'center',
+    opacity: 0.6,
   }
 });

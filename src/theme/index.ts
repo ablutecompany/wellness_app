@@ -1,18 +1,22 @@
 import { TextStyle } from 'react-native';
 
 export const palette = {
-  background: '#050505',
-  card: '#0F0F0F',
-  cardBorder: '#1F1F1F',
-  primary: '#0070FF', // ablute_ blue
-  wellnessGreen: '#00D97E', // Wellness App Green
-  success: '#00D97E', // Align success with wellness green
-  warning: '#FFD600',
+  background: '#030303', // Deep charcoal / almost black
+  card: 'rgba(255, 255, 255, 0.02)', // Floating not heavy solid
+  cardBorder: 'rgba(255, 255, 255, 0.05)',
+  primary: '#0055FF', // Elegant controlled blue
+  wellnessGreen: '#00A86B', // Contained green, not fluorescent
+  success: '#00A86B', 
+  warning: '#D4AF37', // More refined gold/warning
   error: '#FF3B30',
-  text: '#FFFFFF',
+  text: '#FAFAFA', // Off-white soft
   textSecondary: '#8E8E93',
   textMuted: '#48484A',
-  overlay: 'rgba(0,0,0,0.6)',
+  overlay: 'rgba(0,0,0,0.8)',
+  glass: 'rgba(255, 255, 255, 0.03)',
+  glassBorder: 'rgba(255, 255, 255, 0.08)',
+  biologicalBlue: '#0A84FF', // Tech intelligence blue
+  biologicalGreen: '#00A86B', // Clean wellness green
   transparent: 'transparent',
 };
 

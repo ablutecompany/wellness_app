@@ -13,22 +13,21 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({ size = 'small' }) => {
   return (
     <View style={styles.container}>
       <Typography 
-        variant={isLarge ? 'h1' : 'body'} 
-        style={[styles.baseText, isLarge && { fontSize: 32 }]}
+        variant={isLarge ? 'h2' : 'caption'} 
+        style={[styles.baseText, isLarge && { fontSize: 28 }]}
       >
         ablute
         <Typography 
-          variant={isLarge ? 'h1' : 'body'} 
-          style={[styles.underscore, isLarge && { fontSize: 32 }]}
+          variant={isLarge ? 'h2' : 'caption'} 
+          style={[styles.underscore, isLarge && { fontSize: 28 }]}
         >
           _
         </Typography>
-        {' '}
         <Typography 
-          variant={isLarge ? 'h1' : 'body'} 
-          style={[styles.wellness, isLarge && { fontSize: 32 }]}
+          variant={isLarge ? 'h2' : 'caption'} 
+          style={[styles.wellness, isLarge && { fontSize: 28 }]}
         >
-          wellness
+           wellness
         </Typography>
       </Typography>
     </View>
@@ -43,13 +42,15 @@ const styles = StyleSheet.create({
   baseText: {
     fontWeight: '700',
     letterSpacing: -0.5,
+    opacity: 0.9,
   },
   underscore: {
     color: theme.colors.primary,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   wellness: {
-    color: theme.colors.wellnessGreen,
-    fontWeight: '400',
+    color: theme.colors.wellnessGreen, // the contained green
+    fontWeight: '600',
+    opacity: 0.8,
   },
 });

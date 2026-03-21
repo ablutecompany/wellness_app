@@ -32,12 +32,14 @@ interface AppState {
   globalScore: number;
   isNfcLoading: boolean;
   isMeasuring: boolean;
+  credits: number;
   setUser: (user: UserProfile) => void;
   addMeasurement: (measurement: Measurement) => void;
   setThemeScores: (scores: ThemeScore[]) => void;
   setGlobalScore: (score: number) => void;
   setNfcLoading: (loading: boolean) => void;
   setIsMeasuring: (measuring: boolean) => void;
+  setCredits: (credits: number) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -47,6 +49,7 @@ export const useStore = create<AppState>((set) => ({
   globalScore: 0,
   isNfcLoading: false,
   isMeasuring: false,
+  credits: 10,
   setUser: (user) => set({ user }),
   addMeasurement: (measurement) => set((state) => ({ 
     measurements: [measurement, ...state.measurements] 
@@ -55,4 +58,5 @@ export const useStore = create<AppState>((set) => ({
   setGlobalScore: (score) => set({ globalScore: score }),
   setNfcLoading: (loading) => set({ isNfcLoading: loading }),
   setIsMeasuring: (isMeasuring) => set({ isMeasuring }),
+  setCredits: (credits) => set({ credits }),
 }));

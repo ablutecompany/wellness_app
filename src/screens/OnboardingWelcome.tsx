@@ -41,25 +41,31 @@ export const Button: React.FC<ButtonProps> = ({
   );
 };
 
+import { BrandLogo } from '../components/BrandLogo';
+
 export const WelcomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
     <Container safe style={styles.container}>
-      <View style={styles.content}>
-        <Typography variant="h1" style={styles.logo}>
-          ablute<Typography variant="h1" color={theme.colors.primary}>_</Typography>
-        </Typography>
-        <Typography variant="h2" style={styles.title}>
-          Compreende o teu corpo como nunca antes.
-        </Typography>
-        <Typography color={theme.colors.textSecondary} style={styles.subtitle}>
-          Uma interpretação inteligente dos teus sinais vitais para uma vida com mais clareza.
+      <View /> {/* Top spacing for negative space */}
+      
+      <View style={styles.centerContent}>
+        <BrandLogo size="large" />
+        <View style={styles.sloganContainer}>
+          <Typography variant="h2" style={styles.slogan}>
+            Biological Intelligence.
+          </Typography>
+          <View style={styles.underline} />
+        </View>
+        <Typography color={theme.colors.textSecondary} style={styles.introText}>
+          Uma interpretação funcional e profunda do teu corpo. 
+          Clareza absoluta para o teu bem-estar.
         </Typography>
       </View>
       
       <View style={styles.footer}>
         <Button 
-          title="Começar" 
-          onPress={() => navigation.navigate('OnboardingGoals')}
+          title="Iniciar Jornada" 
+          onPress={() => navigation.navigate('Pairing')}
           icon={<ArrowRight size={20} color={theme.colors.background} />}
         />
       </View>
@@ -72,17 +78,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.spacing.xl,
     justifyContent: 'space-between',
     paddingVertical: theme.spacing.xxl,
+    backgroundColor: theme.colors.background,
   },
-  content: {
-    marginTop: theme.spacing.xxl,
+  centerContent: {
+    alignItems: 'center',
+    marginTop: -theme.spacing.xxl,
   },
-  logo: {
-    fontSize: 42,
-    marginBottom: theme.spacing.xl,
-    letterSpacing: -1,
+  sloganContainer: {
+    marginTop: theme.spacing.xl,
+    alignItems: 'center',
   },
-  title: {
-    marginBottom: theme.spacing.md,
+  slogan: {
+    fontSize: 28,
+    fontWeight: '700',
+    letterSpacing: -0.5,
+    textAlign: 'center',
+  },
+  underline: {
+    height: 3,
+    width: 40,
+    backgroundColor: theme.colors.primary,
+    marginTop: theme.spacing.xs,
+    borderRadius: 2,
+  },
+  introText: {
+    marginTop: theme.spacing.xl,
+    textAlign: 'center',
+    lineHeight: 28,
+    fontSize: 16,
+    paddingHorizontal: theme.spacing.lg,
+    opacity: 0.8,
   },
   subtitle: {
     lineHeight: 24,

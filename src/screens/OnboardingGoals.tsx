@@ -6,13 +6,11 @@ import { theme } from '../theme';
 import { Check } from 'lucide-react-native';
 
 const GOALS = [
-  'Melhorar sono',
-  'Aumentar energia',
-  'Perder peso',
-  'Ganhar massa muscular',
-  'Reduzir stress',
-  'Performance atlética',
-  'Longevidade',
+  'Energia e Vitalidade',
+  'Recuperação Sistémica',
+  'Performance Biológica',
+  'Hidratação e Equilíbrio',
+  'Gestão de Stress',
 ];
 
 export const OnboardingGoals: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -29,7 +27,7 @@ export const OnboardingGoals: React.FC<{ navigation: any }> = ({ navigation }) =
   return (
     <Container safe style={styles.container}>
       <View style={styles.header}>
-        <Typography variant="caption" color={theme.colors.primary}>PASSO 1 DE 3</Typography>
+        <Typography variant="caption" color={theme.colors.primary}>PREFERÊNCIAS</Typography>
         <Typography variant="h2" style={styles.title}>Quais são os teus objetivos?</Typography>
         <Typography color={theme.colors.textSecondary}>Seleciona o que pretendes focar primeiro.</Typography>
       </View>
@@ -54,8 +52,8 @@ export const OnboardingGoals: React.FC<{ navigation: any }> = ({ navigation }) =
 
       <View style={styles.footer}>
         <Button 
-          title="Continuar" 
-          onPress={() => navigation.navigate('OnboardingPermissions')}
+          title="Salvar e Voltar" 
+          onPress={() => navigation.goBack()}
           variant="primary"
         />
       </View>
