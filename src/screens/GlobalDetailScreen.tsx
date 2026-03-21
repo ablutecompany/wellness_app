@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, ScrollView } from 'react-native';
 import { Container, Typography } from '../components/Base';
 import { theme } from '../theme';
-import { X, TrendingUp, ShieldCheck, Zap } from 'lucide-react-native';
+import { X, TrendingUp, ShieldCheck, Zap, Utensils } from 'lucide-react-native';
 
 export const GlobalDetailScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
@@ -18,41 +18,40 @@ export const GlobalDetailScreen: React.FC<{ navigation: any }> = ({ navigation }
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.scoreBreakdown}>
-          <View style={styles.breakdownItem}>
-            <View style={styles.itemHeader}>
-              <TrendingUp size={20} color={theme.colors.success} />
-              <Typography style={styles.itemTitle}>Fisiológico</Typography>
-              <Typography variant="h3">88</Typography>
-            </View>
-            <Typography variant="caption">Dados provenientes de ECG e Bioimpedância.</Typography>
-          </View>
-
-          <View style={styles.breakdownItem}>
-            <View style={styles.itemHeader}>
-              <ShieldCheck size={20} color={theme.colors.primary} />
-              <Typography style={styles.itemTitle}>Comportamental</Typography>
-              <Typography variant="h3">76</Typography>
-            </View>
-            <Typography variant="caption">Aderência a hábitos e padrões de sono.</Typography>
-          </View>
-
-          <View style={styles.breakdownItem}>
-            <View style={styles.itemHeader}>
-              <Zap size={20} color={theme.colors.warning} />
-              <Typography style={styles.itemTitle}>Líquidos e Nutrição</Typography>
-              <Typography variant="h3">82</Typography>
-            </View>
-            <Typography variant="caption">Análises urinárias e hidratação.</Typography>
-          </View>
+        <View style={styles.explanationCard}>
+          <Typography variant="h3" style={{ marginBottom: 12 }}>O teu Insight AI</Typography>
+          <Typography color={theme.colors.textSecondary} style={{ lineHeight: 22 }}>
+            A tua Prontidão Funcional de 82 indica uma excelente capacidade de resposta metabólica. 
+            Contudo, o teu rácio de ureia sugere que a recuperação muscular ainda não está completa.
+          </Typography>
         </View>
 
-        <View style={styles.explanationCard}>
-          <Typography variant="h3" style={{ marginBottom: 12 }}>O que isto significa?</Typography>
-          <Typography color={theme.colors.textSecondary}>
-            O teu score de 82 reflete uma excelente frescura fisiológica, mas indica que o teu comportamento (sono tardio) está a impedir um topo de forma. 
-            A nutrição está estável, garantindo os substratos necessários para o dia.
-          </Typography>
+        <View style={styles.recommendationsList}>
+          <Typography variant="h3" style={{ marginBottom: 16 }}>Top 3 Recomendações</Typography>
+          
+          <View style={styles.recommendationBox}>
+            <Utensils size={20} color={theme.colors.primary} />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Typography variant="body" style={{ fontWeight: 'bold' }}>Aumenta Magnésio</Typography>
+              <Typography variant="caption">Espinafres e amêndoas ao jantar.</Typography>
+            </View>
+          </View>
+
+          <View style={styles.recommendationBox}>
+            <Zap size={20} color={theme.colors.wellnessGreen} />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Typography variant="body" style={{ fontWeight: 'bold' }}>Ciclo de Sono</Typography>
+              <Typography variant="caption">Tenta dormir mais 20min hoje.</Typography>
+            </View>
+          </View>
+
+          <View style={styles.recommendationBox}>
+            <ShieldCheck size={20} color={theme.colors.success} />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Typography variant="body" style={{ fontWeight: 'bold' }}>Hidratação Focada</Typography>
+              <Typography variant="caption">+500ml de água na próxima 1h.</Typography>
+            </View>
+          </View>
         </View>
       </ScrollView>
     </Container>
@@ -68,7 +67,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: theme.spacing.xl,
-    marginBottom: theme.spacing.xxl,
+    marginBottom: theme.spacing.xl,
   },
   closeBtn: {
     width: 44,
@@ -78,33 +77,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scoreBreakdown: {
-    marginBottom: theme.spacing.xl,
-  },
-  breakdownItem: {
-    backgroundColor: theme.colors.card,
-    padding: theme.spacing.lg,
-    borderRadius: 24,
-    marginBottom: theme.spacing.md,
-    borderWidth: 1,
-    borderColor: theme.colors.cardBorder,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  itemTitle: {
-    flex: 1,
-    marginLeft: theme.spacing.sm,
-    fontWeight: '600',
-  },
   explanationCard: {
     backgroundColor: theme.colors.card,
     padding: theme.spacing.xl,
     borderRadius: 30,
     borderWidth: 1,
     borderColor: theme.colors.cardBorder,
+    marginBottom: theme.spacing.xl,
+  },
+  recommendationsList: {
     marginBottom: theme.spacing.xxl,
+  },
+  recommendationBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: theme.colors.card,
+    padding: theme.spacing.lg,
+    borderRadius: 20,
+    marginBottom: theme.spacing.sm,
+    borderWidth: 1,
+    borderColor: theme.colors.cardBorder,
   }
 });

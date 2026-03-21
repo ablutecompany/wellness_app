@@ -4,58 +4,63 @@ import { Container, Typography } from '../components/Base';
 import { Nucleus } from '../components/Nucleus';
 import { theme } from '../theme';
 import { useStore } from '../store/useStore';
-import { Zap, CreditCard, Activity } from 'lucide-react-native';
+import { BrandLogo } from '../components/BrandLogo';
+import { Utensils, Zap, Map, Settings, Activity } from 'lucide-react-native';
 
 export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { globalScore, setGlobalScore } = useStore();
+  const { globalScore, setGlobalScore, setIsMeasuring, isMeasuring } = useStore();
   
   const handleNfcTap = () => {
-    // Simulate NFC trigger
     console.log('NFC Analysis triggered');
   };
 
-  const handleLongPress = () => {
-    navigation.navigate('GlobalDetail');
-  };
-
-  const handleProfilePress = () => {
-    navigation.navigate('Profile');
+  const handleLongPress = async () => {
+    setIsMeasuring(true);
+    // Simulate Ingestion -> scoring process
+    setTimeout(() => {
+      setIsMeasuring(false);
+      setGlobalScore(84);
+      navigation.navigate('GlobalDetail');
+    }, 4000);
   };
 
   return (
     <Container safe style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={handleProfilePress}>
-          <Typography variant="caption">Bom dia,</Typography>
-          <Typography variant="h2">Nuno</Typography>
-        </TouchableOpacity>
-        <View style={styles.creditsContainer}>
-          <CreditCard size={16} color={theme.colors.textSecondary} />
-          <Typography variant="caption" style={styles.creditsText}>12 Créditos</Typography>
+        <BrandLogo size="small" />
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.headerIcon} onPress={() => {}}>
+            <Map size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerIcon} onPress={() => navigation.navigate('Profile')}>
+            <Settings size={24} color={theme.colors.textSecondary} />
+          </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.nucleusWrapper}>
         <Nucleus 
           score={globalScore || 82} 
-          status="forte" 
+          status={isMeasuring ? 'forte' : 'fraco'} 
           onPress={handleNfcTap}
           onLongPress={handleLongPress}
         />
       </View>
 
       <View style={styles.footer}>
-        <View style={styles.infoRow}>
-          <Activity size={20} color={theme.colors.primary} />
-          <Typography style={styles.infoText}>Última análise: há 2h</Typography>
-        </View>
-        
-        <View style={styles.ctaCard}>
-          <Zap size={24} color={theme.colors.success} />
-          <View style={styles.ctaContent}>
-            <Typography variant="h3">Tua frescura está alta</Typography>
-            <Typography variant="caption">Pronto para o próximo treino</Typography>
-          </View>
+        <View style={styles.platformBar}>
+          <TouchableOpacity style={styles.appIcon} onPress={() => {}}>
+            <Utensils size={28} color={theme.colors.primary} />
+            <Typography variant="caption" style={styles.appLabel}>Nutri Plan</Typography>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.appIcon} onPress={() => {}}>
+            <Zap size={28} color={theme.colors.wellnessGreen} />
+            <Typography variant="caption" style={styles.appLabel}>Female H</Typography>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.appIcon} onPress={() => {}}>
+            <Activity size={28} color="#FF9500" />
+            <Typography variant="caption" style={styles.appLabel}>My suplement</Typography>
+          </TouchableOpacity>
         </View>
       </View>
     </Container>
@@ -84,6 +89,13 @@ const styles = StyleSheet.create({
     marginLeft: theme.spacing.xs,
     fontWeight: '600',
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerIcon: {
+    marginLeft: theme.spacing.md,
+  },
   nucleusWrapper: {
     flex: 1,
     justifyContent: 'center',
@@ -92,26 +104,22 @@ const styles = StyleSheet.create({
   footer: {
     marginBottom: theme.spacing.xl,
   },
-  infoRow: {
+  platformBar: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: theme.spacing.lg,
-  },
-  infoText: {
-    marginLeft: theme.spacing.sm,
-    color: theme.colors.textSecondary,
-  },
-  ctaCard: {
     backgroundColor: theme.colors.card,
-    borderRadius: 20,
-    padding: theme.spacing.lg,
-    flexDirection: 'row',
-    alignItems: 'center',
+    borderRadius: 30,
+    paddingVertical: theme.spacing.md,
+    marginBottom: theme.spacing.lg,
     borderWidth: 1,
     borderColor: theme.colors.cardBorder,
   },
-  ctaContent: {
-    marginLeft: theme.spacing.md,
+  appIcon: {
+    alignItems: 'center',
+  },
+  appLabel: {
+    fontSize: 10,
+    marginTop: 4,
   }
 });

@@ -22,6 +22,7 @@ model User {
   country             String
   timezone            String
   accountStatus       String               @default("active")
+  role                UserRole             @default(END_USER)
   passwordHash        String
   onboardingCompleted Boolean              @default(false)
   lastLoginAt         DateTime?
@@ -633,3 +634,12 @@ model AuditEvent {
   payload    Json?
   createdAt  DateTime @default(now())
 }
+
+enum UserRole {
+  END_USER
+  SUPPORT_ADMIN
+  CLINICAL_CONTENT_ADMIN
+  INTEGRATION_ADMIN
+  HYPER_ADMIN
+}
+

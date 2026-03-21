@@ -5,7 +5,8 @@ export const palette = {
   card: '#0F0F0F',
   cardBorder: '#1F1F1F',
   primary: '#0070FF', // ablute_ blue
-  success: '#00F5A0', // Living nucleus - Strong
+  wellnessGreen: '#00D97E', // Wellness App Green
+  success: '#00D97E', // Align success with wellness green
   warning: '#FFD600',
   error: '#FF3B30',
   text: '#FFFFFF',

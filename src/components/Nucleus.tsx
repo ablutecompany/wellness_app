@@ -11,6 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { theme } from '../theme';
 import { Typography } from './Base';
+import { Image, ImageStyle } from 'react-native';
 
 interface NucleusProps {
   score: number;
@@ -21,28 +22,39 @@ interface NucleusProps {
 
 export const Nucleus: React.FC<NucleusProps> = ({ score, onPress, onLongPress, status }) => {
   const scale = useSharedValue(1);
-  const opacity = useSharedValue(status === 'forte' ? 1 : 0.4);
-  const blur = useSharedValue(status === 'forte' ? 20 : 5);
+  const opacity = useSharedValue(0.8);
+  const rotate = useSharedValue(0);
 
   useEffect(() => {
     scale.value = withRepeat(
-      withTiming(status === 'forte' ? 1.1 : 1.02, { 
-        duration: status === 'forte' ? 2000 : 4000,
+      withTiming(status === 'forte' ? 1.08 : 1.03, { 
+        duration: 2500,
         easing: Easing.inOut(Easing.ease)
       }),
       -1,
       true
     );
     
-    opacity.value = withTiming(status === 'forte' ? 1 : 0.4, { duration: 1000 });
+    opacity.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: 1500 }),
+        withTiming(0.7, { duration: 1500 })
+      ),
+      -1,
+      true
+    );
+
+    rotate.value = withRepeat(
+      withTiming(360, { duration: 20000, easing: Easing.linear }),
+      -1,
+      false
+    );
   }, [status]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }],
+      transform: [{ scale: scale.value }, { rotate: `${rotate.value}deg` }],
       opacity: opacity.value,
-      shadowRadius: status === 'forte' ? 30 : 10,
-      shadowOpacity: status === 'forte' ? 0.8 : 0.3,
     };
   });
 
@@ -52,36 +64,23 @@ export const Nucleus: React.FC<NucleusProps> = ({ score, onPress, onLongPress, s
         onPress={onPress} 
         onLongPress={onLongPress}
         delayLongPress={500}
-        style={({ pressed }) => [
-          styles.pressable,
-          pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }
-        ]}
       >
-        <Animated.View style={[
-          styles.outerCircle, 
-          animatedStyle,
-          { borderColor: status === 'forte' ? theme.colors.success : theme.colors.textMuted }
-        ]}>
-          <View style={[
-            styles.innerCircle,
-            { backgroundColor: status === 'forte' ? theme.colors.success : theme.colors.card }
-          ]}>
+        <Animated.View style={[styles.nucleusContainer, animatedStyle]}>
+          <Image 
+            source={{ uri: 'file:///C:/Users/nunom/.gemini/antigravity/brain/e1a5a01b-fea5-47c4-96cd-3810a89ce9f9/ai_intelligence_nucleus_1774107306302.png' }}
+            style={styles.aiImage as ImageStyle}
+            resizeMode="contain"
+          />
+          <Animated.View style={styles.scoreOverlay}>
             <Typography variant="h1" style={styles.scoreText}>
               {score}
             </Typography>
-            <Typography variant="caption" style={{ color: theme.colors.textMuted }}>
-              Score Global
-            </Typography>
-          </View>
+          </Animated.View>
         </Animated.View>
-        
-        {status === 'forte' && (
-          <Animated.View style={[styles.glow, animatedStyle]} />
-        )}
       </Pressable>
       
       <Typography variant="caption" style={styles.tapTip}>
-        TAP para análise (NFC)
+        HOLD para BIOMETRIA
       </Typography>
     </View>
   );
@@ -91,48 +90,34 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: theme.spacing.xl,
   },
-  pressable: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  outerCircle: {
+  nucleusContainer: {
     width: 200,
     height: 200,
-    borderRadius: 100,
-    borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: theme.colors.success,
-    elevation: 20,
-    backgroundColor: 'transparent',
   },
-  innerCircle: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
+  aiImage: {
+    width: 200,
+    height: 200,
+    position: 'absolute',
+  },
+  scoreOverlay: {
     alignItems: 'center',
     justifyContent: 'center',
-    overflow: 'hidden',
   },
   scoreText: {
-    fontSize: 64,
+    fontSize: 56,
     fontWeight: '800',
-    color: theme.colors.background,
-  },
-  glow: {
-    position: 'absolute',
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: theme.colors.success,
-    zIndex: -1,
-    opacity: 0.2,
+    color: theme.colors.text,
+    textShadowColor: 'rgba(0, 217, 126, 0.4)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 15,
   },
   tapTip: {
-    marginTop: theme.spacing.md,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
+    marginTop: 10,
+    letterSpacing: 2,
+    color: theme.colors.textSecondary,
+    fontWeight: '600',
   }
 });
