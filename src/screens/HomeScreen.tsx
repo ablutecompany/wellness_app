@@ -173,6 +173,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
                <SlidersHorizontal size={22} color={theme.colors.textSecondary} />
             </TouchableOpacity>
           </View>
+          <Typography style={styles.evaluationTag}>Evaluation: 8 days ago</Typography>
         </View>
       </View>
 
@@ -304,14 +305,7 @@ export const HomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(8, 12, 20, 0.35)' }]} />
           </View>
         )}
-        {/* Days label — IN FRONT of frosted glass */}
-        {isOnHome && daysSinceExam > 0 && (
-          <View style={styles.daysLabelFront} pointerEvents="none">
-            <Typography style={styles.daysLabelText}>
-              {daysSinceExam === 1 ? '1 dia desde a última avaliação' : `${daysSinceExam} dias desde a última avaliação`}
-            </Typography>
-          </View>
-        )}
+
         <ThemesCarousel 
           globalScore={globalScore || 84} 
           isMeasuring={isMeasuring} 
@@ -491,6 +485,15 @@ const styles = StyleSheet.create({
   iconRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+  },
+  evaluationTag: {
+    fontSize: 10,
+    color: 'rgba(255,255,255,0.3)',
+    fontWeight: '500',
+    marginTop: 2,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
   iconButton: {
     padding: theme.spacing.sm,
@@ -657,21 +660,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     overflow: 'hidden',
   },
-  daysLabelFront: {
-    position: 'absolute',
-    top: '22%',
-    left: 0,
-    right: 0,
-    zIndex: 2,
-    alignItems: 'center',
-  },
-  daysLabelText: {
-    fontSize: 13,
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.55)',
-    letterSpacing: 0.5,
-    textAlign: 'center',
-  },
+
   statusContainer: {
     position: 'absolute',
     bottom: 40,
