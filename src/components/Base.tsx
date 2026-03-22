@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { StyleSheet, Text, TextStyle, View, ViewStyle, ScrollView, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, TextStyle, View, ViewStyle, ScrollView, SafeAreaView, Platform } from 'react-native';
 import { theme } from '../theme';
 
 interface TypographyProps {
@@ -51,9 +51,12 @@ const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
     backgroundColor: theme.colors.background,
+    alignItems: 'center',
   },
   container: {
     flex: 1,
+    width: '100%',
+    maxWidth: Platform.OS === 'web' ? 600 : undefined,
   },
   scrollContent: {
     paddingBottom: theme.spacing.xl,

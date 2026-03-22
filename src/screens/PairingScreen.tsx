@@ -1,54 +1,39 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View, Animated, Easing, TouchableOpacity } from 'react-native';
-import { Container, Typography } from '../components/Base';
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity, Platform } from 'react-native';
+import { Typography } from '../components/Base';
 import { theme } from '../theme';
-import { Smartphone, RefreshCw } from 'lucide-react-native';
+import { Smartphone } from 'lucide-react-native';
 import { BrandLogo } from '../components/BrandLogo';
-
+import { BlurView } from 'expo-blur';
 import { useStore } from '../store/useStore';
 
+type PairingStatus = 'searching' | 'connected';
+
 export const PairingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
-  const { user, credits } = useStore();
-  const [status, setStatus] = React.useState<'searching' | 'connected' | 'error' | 'no_credits'>('searching');
-  const [errorMessage, setErrorMessage] = React.useState('');
-  
-  const pulseAnim = React.useRef(new Animated.Value(1)).current;
-  const rotateAnim = React.useRef(new Animated.Value(0)).current;
+  const { credits } = useStore();
+  const [status, setStatus] = React.useState<PairingStatus>('searching');
 
-  useEffect(() => {
-    // Pulse animation
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.2, duration: 1500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 1500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-      ])
-    ).start();
+  const handleTap = () => {
+    if (status === 'searching') {
+      setStatus('connected');
+      // After showing "Equipamento Detetado", navigate to Main after a brief pause
+      setTimeout(() => navigation.replace('Main'), 2000);
+    }
+  };
 
-    // Spin animation for loader
-    Animated.loop(
-      Animated.timing(rotateAnim, { toValue: 1, duration: 2000, easing: Easing.linear, useNativeDriver: true })
-    ).start();
+  // ── "Equipamento Detetado" — full screen, only text ──────────────────────
+  if (status === 'connected') {
+    return (
+      <View style={styles.detectedScreen}>
+        <Typography style={styles.detectedText}>Equipamento Detetado</Typography>
+      </View>
+    );
+  }
 
-    // Logic Simulation
-    const timer = setTimeout(() => {
-      if (credits <= 0) {
-        setStatus('no_credits');
-      } else {
-        setStatus('connected');
-        setTimeout(() => navigation.replace('Main'), 1500);
-      }
-    }, 4000);
-
-    return () => clearTimeout(timer);
-  }, [credits]);
-
-  const spin = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '360deg']
-  });
-
+  // ── "Encoste para Iniciar" — glassmorphism floating card ─────────────────
   return (
-    <Container safe style={styles.container}>
+    <View style={styles.backdrop}>
+      {/* Header stays visible above the modal */}
       <View style={styles.header}>
         <BrandLogo size="small" />
         <View style={styles.creditBadge}>
@@ -56,156 +41,142 @@ export const PairingScreen: React.FC<{ navigation: any }> = ({ navigation }) => 
         </View>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.animationArea}>
-          <Animated.View style={[styles.pulseCircle, { transform: [{ scale: pulseAnim }], opacity: status === 'searching' ? 0.2 : 0 }]} />
-          <View style={[styles.iconContainer, status === 'error' && styles.iconError]}>
-            {status === 'error' ? (
-              <Smartphone size={48} color={theme.colors.error} />
-            ) : status === 'no_credits' ? (
-              <Smartphone size={48} color={theme.colors.warning} />
-            ) : (
-              <Smartphone size={64} color={status === 'connected' ? theme.colors.primary : theme.colors.textMuted} />
-            )}
-          </View>
-        </View>
+      {/* Floating glass modal — tap anywhere on it to proceed */}
+      <TouchableOpacity style={styles.modalWrapper} onPress={handleTap} activeOpacity={0.95}>
+        <BlurView intensity={Platform.OS === 'web' ? 20 : 60} tint="dark" style={styles.modal}>
+          <View style={styles.modalInner}>
+            {/* Icon */}
+            <View style={styles.iconCircle}>
+              <Smartphone size={40} color="#ffffff" />
+            </View>
 
-        <Typography variant="h2" style={styles.title}>
-          {status === 'searching' ? 'Encoste para Iniciar' : 
-           status === 'connected' ? 'Equipamento Detetado' :
-           status === 'no_credits' ? 'Créditos Insuficientes' : 'Erro de Ligação'}
-        </Typography>
-        
-        <Typography color={theme.colors.textSecondary} style={styles.subtitle}>
-          {status === 'searching' ? 'Aproxima o teu telemóvel do sensor do equipamento ablute_ para ativar a análise.' :
-           status === 'connected' ? 'Sincronização em curso... A tua inteligência biológica está a ser processada.' :
-           status === 'no_credits' ? 'Precisas de pelo menos 1 crédito para realizar esta análise.' :
-           'Não foi possível encontrar o equipamento. Tenta novamente ou verifica o NFC.'}
-        </Typography>
-      </View>
+            {/* Title */}
+            <Typography style={styles.title}>Encoste para Iniciar</Typography>
 
-      <View style={styles.footer}>
-        {status === 'searching' && (
-          <View style={styles.loaderContainer}>
-            <Animated.View style={{ transform: [{ rotate: spin }] }}>
-              <RefreshCw size={20} color={theme.colors.primary} />
-            </Animated.View>
-            <Typography variant="caption" style={{ marginLeft: theme.spacing.sm }}>
-              À procura de hardware...
+            {/* Subtitle */}
+            <Typography style={styles.subtitle}>
+              Aproxima o teu telemóvel do sensor do equipamento ablute_ para ativar a análise.
             </Typography>
-          </View>
-        )}
-        
-        {status === 'no_credits' && (
-          <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('Main', { screen: 'Profile' })}>
-            <Typography variant="button" color={theme.colors.background}>Adquirir Créditos</Typography>
-          </TouchableOpacity>
-        )}
 
-        {(status === 'error' || status === 'no_credits') && (
-          <TouchableOpacity style={styles.retryButton} onPress={() => setStatus('searching')}>
-            <Typography variant="caption" color={theme.colors.primary}>Tentar Novamente</Typography>
-          </TouchableOpacity>
-        )}
-      </View>
-    </Container>
+            {/* Tap hint */}
+            <View style={styles.tapHint}>
+              <Typography style={styles.tapHintText}>Toca aqui para simular</Typography>
+            </View>
+          </View>
+        </BlurView>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: theme.spacing.xl,
-    justifyContent: 'space-between',
-    paddingVertical: theme.spacing.xl,
+  // ── Backdrop ──────────────────────────────────────────────────────────────
+  backdrop: {
+    flex: 1,
     backgroundColor: theme.colors.background,
+    paddingTop: 16,
   },
+
+  // ── Header ────────────────────────────────────────────────────────────────
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: theme.spacing.sm,
+    zIndex: 10,
   },
   creditBadge: {
-    paddingHorizontal: theme.spacing.md,
+    paddingHorizontal: 14,
     paddingVertical: 4,
     borderRadius: 20,
-    backgroundColor: theme.colors.card,
+    backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 1,
-    borderColor: theme.colors.cardBorder,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   creditText: {
     fontWeight: '700',
     color: theme.colors.primary,
   },
-  content: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingBottom: theme.spacing.xxl,
-  },
-  animationArea: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 300,
-    width: '100%',
-  },
-  iconContainer: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: theme.colors.card,
-    alignItems: 'center',
-    justifyContent: 'center',
+
+  // ── Floating modal ────────────────────────────────────────────────────────
+  modalWrapper: {
+    marginHorizontal: 12,
+    marginTop: 60,
+    borderRadius: 24,
+    overflow: 'hidden',
     borderWidth: 1,
-    borderColor: theme.colors.cardBorder,
-    zIndex: 2,
-    shadowColor: theme.colors.primary,
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
-  iconError: {
-    borderColor: theme.colors.error + '40',
+  modal: {
+    borderRadius: 24,
+    overflow: 'hidden',
   },
-  pulseCircle: {
-    position: 'absolute',
-    width: 240,
-    height: 240,
-    borderRadius: 120,
-    backgroundColor: theme.colors.primary,
-    zIndex: 1,
+  modalInner: {
+    padding: 32,
+    backgroundColor: 'rgba(5, 10, 24, 0.6)',
+    alignItems: 'center',
   },
+
+  // ── Icon ──────────────────────────────────────────────────────────────────
+  iconCircle: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: 'rgba(0, 168, 230, 0.15)',
+    borderWidth: 2,
+    borderColor: 'rgba(0, 168, 230, 0.4)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+
+  // ── Text ──────────────────────────────────────────────────────────────────
   title: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#ffffff',
+    letterSpacing: -0.3,
+    marginBottom: 14,
     textAlign: 'center',
-    marginBottom: theme.spacing.md,
-    fontSize: 26,
   },
   subtitle: {
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.45)',
     textAlign: 'center',
     lineHeight: 24,
-    paddingHorizontal: theme.spacing.lg,
-    opacity: 0.8,
+    paddingHorizontal: 8,
+    marginBottom: 28,
   },
-  footer: {
-    alignItems: 'center',
-    marginBottom: theme.spacing.xl,
-    minHeight: 100,
-  },
-  loaderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    opacity: 0.6,
-  },
-  actionButton: {
-    backgroundColor: theme.colors.text,
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.md,
-    borderRadius: 12,
-    width: '100%',
-    alignItems: 'center',
-  },
-  retryButton: {
-    marginTop: theme.spacing.lg,
-    padding: theme.spacing.sm,
-  }
-});
 
+  // ── Tap hint ──────────────────────────────────────────────────────────────
+  tapHint: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 14,
+    backgroundColor: 'rgba(0, 168, 230, 0.08)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 168, 230, 0.2)',
+  },
+  tapHintText: {
+    fontSize: 13,
+    color: 'rgba(0, 212, 170, 0.8)',
+    letterSpacing: 0.3,
+    fontWeight: '500',
+  },
+
+  // ── Equipamento Detetado ──────────────────────────────────────────────────
+  detectedScreen: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  detectedText: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: '#ffffff',
+    letterSpacing: -0.5,
+    textAlign: 'center',
+  },
+});

@@ -1,31 +1,38 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Typography } from './Base';
 import { theme } from '../theme';
 
 interface BrandLogoProps {
-  size?: 'small' | 'large';
+  size?: 'small' | 'medium' | 'large';
 }
 
 export const BrandLogo: React.FC<BrandLogoProps> = ({ size = 'small' }) => {
   const isLarge = size === 'large';
+  const isMedium = size === 'medium';
+  
+  const getFontSize = () => {
+    if (isLarge) return 28;
+    if (isMedium) return 18;
+    return undefined; // falls back to caption/h2 defaults
+  };
   
   return (
     <View style={styles.container}>
       <Typography 
         variant={isLarge ? 'h2' : 'caption'} 
-        style={[styles.baseText, isLarge && { fontSize: 28 }]}
+        style={[styles.baseText, { fontSize: getFontSize() }]}
       >
         ablute
         <Typography 
           variant={isLarge ? 'h2' : 'caption'} 
-          style={[styles.underscore, isLarge && { fontSize: 28 }]}
+          style={[styles.underscore, { fontSize: getFontSize() }]}
         >
           _
         </Typography>
         <Typography 
           variant={isLarge ? 'h2' : 'caption'} 
-          style={[styles.wellness, isLarge && { fontSize: 28 }]}
+          style={[styles.wellness, { fontSize: getFontSize() }]}
         >
            wellness
         </Typography>
@@ -40,6 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   baseText: {
+    fontFamily: Platform.OS === 'web' ? '"Comfortaa", sans-serif' : undefined,
     fontWeight: '700',
     letterSpacing: -0.5,
     opacity: 0.9,
@@ -50,7 +58,7 @@ const styles = StyleSheet.create({
   },
   wellness: {
     color: theme.colors.wellnessGreen, // the contained green
-    fontWeight: '600',
+    fontWeight: '300', // thinner font requested by user
     opacity: 0.8,
   },
 });

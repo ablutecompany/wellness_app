@@ -121,16 +121,62 @@ const fragmentShaderSource = `
   }
 `;
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Inject CSS keyframe into <head> once — this is the ONLY way to animate
+// a DOM element's transform on the web platform without RNAnimated.
+// ─────────────────────────────────────────────────────────────────────────────
+function injectBreathCSS() {
+  if (typeof document === 'undefined') return;
+  // Always replace by ID so hot reloads apply the latest CSS immediately
+  const existing = document.getElementById('nucleus-breath-style');
+  if (existing) existing.remove();
+  const style = document.createElement('style');
+  style.id = 'nucleus-breath-style';
+  style.textContent = `
+    @keyframes nucleusBreathe {
+      0%   { transform: scale(1.00); }
+      50%  { transform: scale(1.40); }
+      100% { transform: scale(1.00); }
+    }
+    .nucleus-breath-wrapper {
+      animation: nucleusBreathe 9000ms ease-in-out infinite;
+      transform-origin: center center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
 export const Nucleus: React.FC<NucleusProps> = ({ score, onPress, onLongPress, status }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>(0);
+  const wrapperRef = useRef<any>(null);
+
+  // Apply CSS animation to the wrapper DOM node
+  useEffect(() => {
+    injectBreathCSS();
+    // Access the underlying DOM div that React Native Web creates for <View>
+    const node = wrapperRef.current;
+    if (node) {
+      // RN Web renders View as a div — we can set className directly
+      if (node.classList) {
+        node.classList.add('nucleus-breath-wrapper');
+      } else if (node._nativeTag) {
+        // fallback: find by native tag
+        const el = document.querySelector(`[data-tag="${node._nativeTag}"]`);
+        if (el) el.classList.add('nucleus-breath-wrapper');
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     // React Native Web maps 'canvas' to HTMLCanvasElement seamlessly.
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
     if (!gl) return;
 
     // 1. Compile Shaders
@@ -230,9 +276,12 @@ export const Nucleus: React.FC<NucleusProps> = ({ score, onPress, onLongPress, s
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={500}>
-        <canvas ref={canvasRef} style={styles.canvas as any} />
-      </Pressable>
+      {/* breath wrapper — CSS animation applied via ref after mount */}
+      <View ref={wrapperRef} style={styles.breathWrapper}>
+        <Pressable onPress={onPress} onLongPress={onLongPress} delayLongPress={500}>
+          <canvas ref={canvasRef} style={styles.canvas as any} />
+        </Pressable>
+      </View>
     </View>
   );
 };
@@ -242,10 +291,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  breathWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   canvas: {
     width: SIZE,
     height: SIZE,
-    outline: 'none', // Remove focus ring
-    pointerEvents: 'none', // Pressable handles the touches
-  },
+    outline: 'none',
+    pointerEvents: 'none',
+  } as any,
 });

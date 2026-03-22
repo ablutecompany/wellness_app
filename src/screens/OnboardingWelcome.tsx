@@ -45,31 +45,15 @@ import { BrandLogo } from '../components/BrandLogo';
 
 export const WelcomeScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   return (
-    <Container safe style={styles.container}>
-      <View /> {/* Top spacing for negative space */}
-      
-      <View style={styles.centerContent}>
+    <TouchableOpacity 
+      style={{ flex: 1 }} 
+      activeOpacity={1} 
+      onPress={() => navigation.navigate('Main', { screen: 'Home' })}
+    >
+      <Container safe style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
         <BrandLogo size="large" />
-        <View style={styles.sloganContainer}>
-          <Typography variant="h2" style={styles.slogan}>
-            Biological Intelligence.
-          </Typography>
-          <View style={styles.underline} />
-        </View>
-        <Typography color={theme.colors.textSecondary} style={styles.introText}>
-          Uma interpretação funcional e profunda do teu corpo. 
-          Clareza absoluta para o teu bem-estar.
-        </Typography>
-      </View>
-      
-      <View style={styles.footer}>
-        <Button 
-          title="Iniciar Jornada" 
-          onPress={() => navigation.navigate('Pairing')}
-          icon={<ArrowRight size={20} color={theme.colors.background} />}
-        />
-      </View>
-    </Container>
+      </Container>
+    </TouchableOpacity>
   );
 };
 
